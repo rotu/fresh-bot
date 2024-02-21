@@ -1,6 +1,7 @@
-import { expect } from "chai";
+import assert from "node:assert/strict";
+import { describe, it } from "node:test";
 
-import { isBot } from "./utils";
+import { isBot } from "./utils.js";
 
 describe("isBot", () => {
   describe("when data doesn't have bot body", () => {
@@ -12,7 +13,7 @@ describe("isBot", () => {
     };
 
     it("returns false", () => {
-      expect(isBot(data)).to.be.false;
+      assert.equal(isBot(data), false);
     });
   });
 
@@ -25,7 +26,7 @@ describe("isBot", () => {
     };
 
     it("returns false", () => {
-      expect(isBot(data)).to.be.false;
+      assert.equal(isBot(data), false);
     });
   });
 
@@ -38,7 +39,7 @@ describe("isBot", () => {
     };
 
     it("returns true", () => {
-      expect(isBot(data)).to.be.true;
+      assert.equal(isBot(data), true);
     });
   });
 
@@ -53,7 +54,7 @@ describe("isBot", () => {
       },
       body,
     };
-    expect(isBot(data)).to.be.true;
+    assert.equal(isBot(data), true);
   });
 
   it("supports rails", () => {
@@ -70,7 +71,7 @@ describe("isBot", () => {
       },
       body,
     };
-    expect(isBot(data)).to.be.true;
+    assert.equal(isBot(data), true);
   });
 
   it("supports mocha", () => {
@@ -86,7 +87,7 @@ describe("isBot", () => {
       },
       body,
     };
-    expect(isBot(data)).to.be.true;
+    assert.equal(isBot(data), true);
   });
 
   it("supports electron-builder", () => {
@@ -102,7 +103,7 @@ describe("isBot", () => {
       },
       body,
     };
-    expect(isBot(data)).to.be.true;
+    assert.equal(isBot(data), true);
   });
 
   it("supports material-table", () => {
@@ -116,6 +117,6 @@ describe("isBot", () => {
       },
       body,
     };
-    expect(isBot(data)).to.be.true;
+    assert.equal(isBot(data), true);
   });
 });

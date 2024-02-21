@@ -1,13 +1,13 @@
-import { isBot, commentUrlParamsRegex } from "./utils/utils";
-import { config, devEnv } from "./config/config";
+import { config, devEnv } from "./config/config.js";
+import { commentUrlParamsRegex, isBot } from "./utils/utils.js";
 
-const { Octokit } = require("@octokit/action");
-const { throttling } = require("@octokit/plugin-throttling");
-const moment = require("moment");
+import { Octokit } from "@octokit/action";
+import { throttling } from "@octokit/plugin-throttling";
+import moment from "moment";
 
 if (devEnv()) {
-  // eslint-disable-next-line global-require, import/no-extraneous-dependencies
-  require("dotenv-safe").config();
+  const dotEnvSafe = await import("dotenv-safe");
+  dotEnvSafe.config();
 }
 
 const ThrottledOctokit = Octokit.plugin(throttling);
@@ -17,7 +17,7 @@ export async function run() {
     throttle: {
       onRateLimit: (retryAfter, options) => {
         console.error(
-          `Request quota exhausted for request ${options.method} ${options.url}, number of total global retries: ${options.request.retryCount}`
+          `Request quota exhausted for request ${options.method} ${options.url}, number of total global retries: ${options.request.retryCount}`,
         );
 
         console.log(`Retrying after ${retryAfter} seconds!`);
@@ -26,7 +26,7 @@ export async function run() {
       },
       onAbuseLimit: (retryAfter, options) => {
         console.error(
-          `Abuse detected for request ${options.method} ${options.url}, retry count: ${options.request.retryCount}`
+          `Abuse detected for request ${options.method} ${options.url}, retry count: ${options.request.retryCount}`,
         );
 
         console.log(`Retrying after ${retryAfter} seconds!`);
@@ -36,12 +36,11 @@ export async function run() {
     },
   });
 
-  const notificationsRequest = octokit.activity.listNotificationsForAuthenticatedUser.endpoint.merge(
-    {
+  const notificationsRequest =
+    octokit.activity.listNotificationsForAuthenticatedUser.endpoint.merge({
       all: true,
       since: moment().subtract(7, "days").toISOString(),
-    }
-  );
+    });
 
   return octokit.paginate(notificationsRequest).then((notifications) => {
     const promises = notifications.map((notification) => {
@@ -69,7 +68,7 @@ export async function run() {
               "Comment for",
               latestCommentUrl,
               "is not left by a stale bot on issue",
-              subjectUrl
+              subjectUrl,
             );
 
             resolve();
@@ -80,13 +79,13 @@ export async function run() {
           "Found stale bot comment",
           latestCommentUrl,
           "on issue",
-          subjectUrl
+          subjectUrl,
         );
 
         if (devEnv()) {
           return new Promise((resolve) => {
             console.log(
-              "Responding to stale bot comments is disabled in development environment."
+              "Responding to stale bot comments is disabled in development environment.",
             );
 
             resolve();

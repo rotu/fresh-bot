@@ -1,6 +1,5 @@
-import { run } from "./src/run";
-
-const core = require("@actions/core");
+import * as core from "@actions/core";
+import { run } from "./src/run.js";
 
 run().catch((err) => {
   core.setFailed(err.toString());
